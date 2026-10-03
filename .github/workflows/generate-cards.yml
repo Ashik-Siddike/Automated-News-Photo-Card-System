@@ -4,12 +4,14 @@ on:
   schedule:
     # Runs every 30 minutes, 24/7 (UTC time)
     - cron: '*/30 * * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub UI anytime
+  workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions UI
 
 jobs:
   generate:
     name: Crawl News & Generate Photo Cards
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to commit cards back to repository
 
     steps:
       - name: 📥 Check out repository
@@ -19,21 +21,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
 
-      - name: 🔤 Install Bengali Fonts & Chromium
+      - name: 🔤 Install Bengali Fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-beng fonts-noto-core chromium-browser
+          sudo apt-get install -y fonts-beng fonts-noto-core fonts-freefont-ttf
 
       - name: 📦 Install npm dependencies
         run: |
-          npm ci || npm install
+          npm install
+
+      - name: 🔨 Build TypeScript
+        run: |
+          npm run build
 
       - name: 🚀 Run PhotoCard Generation Pipeline
         env:
           NODE_OPTIONS: '--dns-result-order=ipv4first'
-          PUPPETEER_EXECUTABLE_PATH: '/usr/bin/chromium-browser'
+          PUPPETEER_EXECUTABLE_PATH: '/usr/bin/google-chrome'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -41,7 +46,7 @@ jobs:
           TEMPLATE_STYLE: 'breaking'
           CARD_ASPECT_RATIO: 'square'
         run: |
-          npm run generate
+          node dist/index.js
 
       - name: 💾 Commit & Push generated cards and cache
         run: |
@@ -53,6 +58,7 @@ jobs:
 
       - name: 📦 Upload Generated Cards as Artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: news-photo-cards
           path: output/
