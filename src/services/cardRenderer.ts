@@ -5,6 +5,7 @@ import { NewsItem, RenderCardOptions, RenderResult, TemplateStyle } from '../typ
 import { QRGenerator } from './qrGenerator';
 import { formatBengaliDate, cleanBengaliHeadline } from '../utils/bengali';
 import { APP_CONFIG } from '../config/sources';
+import { BRANDING_CONFIG } from '../config/branding';
 
 export class CardRenderer {
   private templatesDir: string;
@@ -143,7 +144,9 @@ export class CardRenderer {
       .replace(/{{date}}/g, dateFormatted)
       .replace(/{{imageUrl}}/g, imageUrl)
       .replace(/{{qrCodeDataUrl}}/g, qrDataUrl)
-      .replace(/{{aspectRatioClass}}/g, aspectRatio);
+      .replace(/{{aspectRatioClass}}/g, aspectRatio)
+      .replace(/{{brandName}}/g, BRANDING_CONFIG.brandName)
+      .replace(/{{brandTagline}}/g, BRANDING_CONFIG.brandTagline);
 
     // Conditional summary replacement
     if (news.summary && news.summary.trim().length > 0) {

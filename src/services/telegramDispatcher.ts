@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { RenderResult } from '../types';
+import { BRANDING_CONFIG } from '../config/branding';
 
 export class TelegramDispatcher {
   private botToken?: string;
@@ -30,7 +31,7 @@ export class TelegramDispatcher {
                       (news.summary ? `💬 <i>${news.summary}</i>\n\n` : '') +
                       `📌 <b>উৎস:</b> ${news.source}\n` +
                       `🔗 <b>মূল প্রতিবেদন:</b> <a href="${news.sourceUrl}">এখানে ক্লিক করুন</a>\n` +
-                      `⚡ <i>সত্য সংবাদ ফটো কার্ড রোবট দ্বারা স্বয়ংক্রিয়ভাবে তৈরি</i>`;
+                      `<i>${BRANDING_CONFIG.telegramSignature}</i>`;
 
       const blob = new Blob([fileData], { type: 'image/png' });
       const formData = new FormData();
