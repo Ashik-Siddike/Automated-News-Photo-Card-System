@@ -35,13 +35,16 @@ JSON ফরম্যাটে উত্তর দাও:
   "category": "..."
 }`;
 
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`;
+      const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 12000);
 
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': this.apiKey
+        },
         signal: controller.signal,
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
