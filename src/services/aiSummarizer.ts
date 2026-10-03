@@ -35,7 +35,7 @@ JSON ফরম্যাটে উত্তর দাও:
   "category": "..."
 }`;
 
-      const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 12000);
 
