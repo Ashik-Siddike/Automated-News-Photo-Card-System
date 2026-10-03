@@ -1,0 +1,18 @@
+services:
+  photocard-studio:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_OPTIONS=--dns-result-order=ipv4first
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - MAX_CARDS_PER_RUN=3
+      - TEMPLATE_STYLE=breaking
+      - CARD_ASPECT_RATIO=square
+    volumes:
+      - ./output:/app/output
+      - ./data:/app/data
+    restart: unless-stopped

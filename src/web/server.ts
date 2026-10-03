@@ -1,0 +1,134 @@
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { NewsFetcher } from '../services/newsFetcher';
+import { CardRenderer } from '../services/cardRenderer';
+import { AISummarizer } from '../services/aiSummarizer';
+import { TelegramDispatcher } from '../services/telegramDispatcher';
+import { NewsItem, TemplateStyle, CardAspectRatio } from '../types';
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const outputDir = path.resolve(process.cwd(), 'output');
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// Serve static cards and public web files
+app.use('/output', express.static(outputDir));
+const publicDir = fs.existsSync(path.join(__dirname, 'public')) 
+  ? path.join(__dirname, 'public') 
+  : path.resolve(process.cwd(), 'src/web/public');
+app.use(express.static(publicDir));
+
+const fetcher = new NewsFetcher();
+const renderer = new CardRenderer();
+const summarizer = new AISummarizer();
+const dispatcher = new TelegramDispatcher();
+
+// API 1: List all generated cards
+app.get('/api/cards', (req, res) => {
+  try {
+    const files = fs.readdirSync(outputDir)
+      .filter(f => f.endsWith('.png') || f.endsWith('.jpg'))
+      .map(file => {
+        const stats = fs.statSync(path.join(outputDir, file));
+        return {
+          fileName: file,
+          url: `/output/${file}`,
+          createdAt: stats.birthtime,
+          size: stats.size
+        };
+      })
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    res.json({ success: true, cards: files });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// API 2: Fetch today's news from portals
+app.get('/api/news', async (req, res) => {
+  try {
+    const news = await fetcher.fetchAllNews(24);
+    res.json({ success: true, count: news.length, news });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// API 3: Generate Card on demand
+app.post('/api/generate', async (req, res) => {
+  try {
+    const {
+      title,
+      summary,
+      source,
+      sourceUrl,
+      imageUrl,
+      category,
+      style,
+      aspectRatio,
+      sendTelegram
+    } = req.body;
+
+    if (!title || !sourceUrl) {
+      return res.status(400).json({ success: false, error: 'শিরোনাম এবং সোর্স URL আবশ্যক।' });
+    }
+
+    let news: NewsItem = {
+      id: 'custom-' + Date.now(),
+      title,
+      summary: summary || '',
+      source: source || 'অনলাইন ডেস্ক',
+      sourceUrl,
+      imageUrl: imageUrl || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=80',
+      category: category || 'জাতীয়',
+      publishedAt: new Date().toISOString()
+    };
+
+    // Refine with AI if configured
+    news = await summarizer.polishNews(news);
+
+    const result = await renderer.renderCard({
+      news,
+      style: (style as TemplateStyle) || 'breaking',
+      aspectRatio: (aspectRatio as CardAspectRatio) || 'square'
+    });
+
+    let telegramSent = false;
+    if (sendTelegram && dispatcher.isConfigured()) {
+      telegramSent = await dispatcher.dispatch(result);
+    }
+
+    res.json({
+      success: true,
+      card: {
+        fileName: result.fileName,
+        url: `/output/${result.fileName}`,
+        telegramSent,
+        news: result.news
+      }
+    });
+  } catch (error: any) {
+    console.error('Generate error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`\n======================================================`);
+  console.log(`🌐 নিউজ ফটো কার্ড ড্যাশবোর্ড চালু হয়েছে!`);
+  console.log(`📍 ব্রাউজারে দেখুন: http://localhost:${port}`);
+  console.log(`======================================================\n`);
+});

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>নিউজ ফটো-কার্ড অটোমেশন স্টুডিও</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    main {
+      flex: 1;
+      padding: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Studio Grid */
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .panel-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #38bdf8;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      color: white;
+      font-family: inherit;
+      font-size: 16px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    textarea.form-control {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #3b82f6);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, var(--primary-hover), #2563eb);
+      transform: translateY(-2px);
+    }
+
+    /* Preview area */
+    .preview-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .preview-image-box {
+      width: 100%;
+      max-width: 520px;
+      aspect-ratio: 1 / 1;
+      background: #0b1120;
+      border: 2px dashed #1e293b;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .preview-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+
+    .placeholder-text {
+      color: #64748b;
+      font-size: 16px;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      color: white;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Gallery Grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .gallery-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .gallery-thumb {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+
+    .gallery-info {
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gallery-info span {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Live News List */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .news-card-row {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .news-row-content h3 {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .news-row-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-generate-row {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-generate-row:hover {
+      background: #0369a1;
+    }
+
+    /* Spinner */
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand-title">
+      <span>📰 সংবাদ ফটো-কার্ড স্টুডিও</span>
+      <span class="brand-badge">অটোমেশন লাইভ</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('studio')">🎨 কার্ড জেনারেটর</button>
+      <button class="tab-btn" onclick="switchTab('live-news')">📡 আজকের লাইভ সংবাদ</button>
+      <button class="tab-btn" onclick="switchTab('gallery')">🖼️ তৈরি হওয়া কার্ড গ্যালারি</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: STUDIO -->
+    <div id="tab-studio" class="tab-content active">
+      <div class="studio-layout">
+        <!-- Form Panel -->
+        <div class="panel-card">
+          <div class="panel-title">
+            <span>⚙️ ফটো কার্ডের তথ্য নির্ধারণ</span>
+          </div>
+          <form id="cardForm" onsubmit="generateCard(event)">
+            <div class="form-group">
+              <label>সংবাদের শিরোনাম (Headline)*</label>
+              <textarea id="inpTitle" class="form-control" rows="2" placeholder="যেমন: ঢাকায় প্রযুক্তি ও আধুনিক মিডিয়া অটোমেশনের নতুন যুগের সূচনা" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>সারসংক্ষেপ বা বুলেট পয়েন্ট (Summary/Quote)</label>
+              <textarea id="inpSummary" class="form-control" rows="2" placeholder="সংবাদের গুরুত্বপূর্ণ ১-২ লাইনের মূল বক্তব্য বা উদ্ধৃতি"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>সংবাদ সোর্স / পত্রিকা</label>
+                <select id="inpSource" class="form-control">
+                  <option value="প্রথম আলো">প্রথম আলো</option>
+                  <option value="ডেইলি স্টার">ডেইলি স্টার</option>
+                  <option value="বিডিনিউজ২৪">বিডিনিউজ২৪</option>
+                  <option value="ঢাকা ট্রিবিউন">ঢাকা ট্রিবিউন</option>
+                  <option value="দৈনিক ইত্তেফাক">দৈনিক ইত্তেফাক</option>
+                  <option value="যুগান্তর">যুগান্তর</option>
+                  <option value="অনলাইন বার্তা">অনলাইন বার্তা</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ক্যাটাগরি</label>
+                <select id="inpCategory" class="form-control">
+                  <option value="ব্রেকিং নিউজ">ব্রেকিং নিউজ</option>
+                  <option value="জাতীয়">জাতীয়</option>
+                  <option value="রাজনীতি">রাজনীতি</option>
+                  <option value="অর্থনীতি">অর্থনীতি</option>
+                  <option value="আন্তর্জাতিক">আন্তর্জাতিক</option>
+                  <option value="প্রযুক্তি">প্রযুক্তি</option>
+                  <option value="খেলাধুলা">খেলাধুলা</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>মূল খবরের লিঙ্ক (QR কোডে যাবে)*</label>
+              <input type="url" id="inpSourceUrl" class="form-control" placeholder="https://www.prothomalo.com/..." required>
+            </div>
+
+            <div class="form-group">
+              <label>সংবাদের ছবি লিঙ্ক (Image URL)</label>
+              <input type="url" id="inpImageUrl" class="form-control" placeholder="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=80">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>টেমপ্লেট ডিজাইন স্টাইল</label>
+                <select id="inpStyle" class="form-control">
+                  <option value="breaking">ব্রেকিং নিউজ (ডার্ক সিনেমাটিক)</option>
+                  <option value="editorial">এডিটরিয়াল (ম্যাগাজিন ফ্রেম)</option>
+                  <option value="quote">উদ্ধৃতি / বক্তব্য (কোটেশন স্টাইল)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>আকার / অ্যাসপেক্ট রেশিও</label>
+                <select id="inpAspectRatio" class="form-control">
+                  <option value="square">১:১ স্কয়ার (১০৮০x১০৮০)</option>
+                  <option value="portrait">৪:৫ পোর্ট্রেট (১০৮০x১৩৫০)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn-submit">
+              <div id="spinner" class="spinner"></div>
+              <span id="btnText">✨ ফটো কার্ড তৈরি করুন</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="panel-card preview-card">
+          <div class="panel-title">
+            <span>🖼️ রিয়েলটাইম ফটো কার্ড প্রিভিউ</span>
+          </div>
+
+          <div class="preview-image-box">
+            <span id="placeholderText" class="placeholder-text">ফটো কার্ড জেনারেট হলে এখানে হাই-রেজোলিউশন ছবি প্রদর্শিত হবে</span>
+            <img id="previewImg" src="" alt="Rendered Photo Card">
+          </div>
+
+          <div id="previewActions" class="preview-actions" style="display: none;">
+            <a id="btnDownload" class="btn-action" href="#" download="news_card.png">📥 ডাউনলোড PNG</a>
+            <a id="btnOpenFull" class="btn-action" href="#" target="_blank">🔍 ফুল স্ক্রিনে দেখুন</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LIVE NEWS -->
+    <div id="tab-live-news" class="tab-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="font-size: 24px;">📡 আজকের শীর্ষ বাংলাদেশি পোর্টালের সংবাদ</h2>
+        <button class="btn-action" style="padding: 10px 20px;" onclick="loadLiveNews()">🔄 রিফ্রেশ সংবাদ</button>
+      </div>
+      <div id="liveNewsList" class="news-list">
+        <p style="color: var(--text-muted); text-align: center; padding: 40px;">সংবাদ লোড হচ্ছে...</p>
+      </div>
+    </div>
+
+    <!-- TAB 3: GALLERY -->
+    <div id="tab-gallery" class="tab-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="font-size: 24px;">🖼️ তৈরি হওয়া সমস্ত ফটো কার্ড গ্যালারি</h2>
+        <button class="btn-action" style="padding: 10px 20px;" onclick="loadGallery()">🔄 রিফ্রেশ গ্যালারি</button>
+      </div>
+      <div id="galleryGrid" class="gallery-grid">
+        <p style="color: var(--text-muted); text-align: center; grid-column: 1/-1; padding: 40px;">কোনো ফটো কার্ড পাওয়া যায়নি</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+
+      if (tabName === 'gallery') loadGallery();
+      if (tabName === 'live-news') loadLiveNews();
+    }
+
+    // Generate Card Handler
+    async function generateCard(e) {
+      e.preventDefault();
+
+      const btnSubmit = document.getElementById('btnSubmit');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+
+      btnSubmit.disabled = true;
+      btnText.innerText = 'জেনারেট হচ্ছে...';
+      spinner.style.display = 'block';
+
+      const payload = {
+        title: document.getElementById('inpTitle').value,
+        summary: document.getElementById('inpSummary').value,
+        source: document.getElementById('inpSource').value,
+        category: document.getElementById('inpCategory').value,
+        sourceUrl: document.getElementById('inpSourceUrl').value,
+        imageUrl: document.getElementById('inpImageUrl').value,
+        style: document.getElementById('inpStyle').value,
+        aspectRatio: document.getElementById('inpAspectRatio').value
+      };
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          const img = document.getElementById('previewImg');
+          img.src = data.card.url + '?t=' + Date.now();
+          img.style.display = 'block';
+          document.getElementById('placeholderText').style.display = 'none';
+
+          const btnDownload = document.getElementById('btnDownload');
+          btnDownload.href = data.card.url;
+          btnDownload.download = data.card.fileName;
+
+          const btnOpenFull = document.getElementById('btnOpenFull');
+          btnOpenFull.href = data.card.url;
+
+          document.getElementById('previewActions').style.display = 'flex';
+        } else {
+          alert('ত্রুটি: ' + data.error);
+        }
+      } catch (err) {
+        alert('নেটওয়ার্ক ত্রুটি: ' + err.message);
+      } finally {
+        btnSubmit.disabled = false;
+        btnText.innerText = '✨ ফটো কার্ড তৈরি করুন';
+        spinner.style.display = 'none';
+      }
+    }
+
+    // Load Gallery
+    async function loadGallery() {
+      const grid = document.getElementById('galleryGrid');
+      try {
+        const res = await fetch('/api/cards');
+        const data = await res.json();
+        if (data.success && data.cards.length > 0) {
+          grid.innerHTML = data.cards.map(c => `
+            <div class="gallery-item">
+              <a href="${c.url}" target="_blank">
+                <img class="gallery-thumb" src="${c.url}" alt="${c.fileName}">
+              </a>
+              <div class="gallery-info">
+                <span>${new Date(c.createdAt).toLocaleTimeString('bn-BD')}</span>
+                <a class="btn-action" style="padding: 4px 10px; font-size: 13px;" href="${c.url}" download="${c.fileName}">ডাউনলোড</a>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          grid.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1; padding: 40px;">এখনো কোনো ফটো কার্ড তৈরি হয়নি।</p>';
+        }
+      } catch (err) {
+        grid.innerHTML = '<p style="color: red; text-align: center; grid-column: 1/-1;">গ্যালারি লোড ব্যর্থ হয়েছে।</p>';
+      }
+    }
+
+    // Load Live News
+    async function loadLiveNews() {
+      const list = document.getElementById('liveNewsList');
+      list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">শীর্ষ পোর্টালগুলো থেকে আজকের সংবাদ আনা হচ্ছে...</p>';
+
+      try {
+        const res = await fetch('/api/news');
+        const data = await res.json();
+        if (data.success && data.news.length > 0) {
+          list.innerHTML = data.news.map(n => `
+            <div class="news-card-row">
+              <div class="news-row-content">
+                <h3>${n.title}</h3>
+                <div class="news-row-meta">
+                  <span>📰 ${n.source}</span>
+                  <span>📁 ${n.category}</span>
+                  <span>🕒 ${new Date(n.publishedAt).toLocaleTimeString('bn-BD')}</span>
+                </div>
+              </div>
+              <button class="btn-generate-row" onclick='useNewsInStudio(${JSON.stringify(n).replace(/'/g, "&apos;")})'>
+                🎨 কার্ড তৈরি করুন
+              </button>
+            </div>
+          `).join('');
+        } else {
+          list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">কোনো সংবাদ পাওয়া যায়নি।</p>';
+        }
+      } catch (err) {
+        list.innerHTML = '<p style="color: red; text-align: center; padding: 40px;">নিউজ লোড ব্যর্থ হয়েছে।</p>';
+      }
+    }
+
+    function useNewsInStudio(news) {
+      document.getElementById('inpTitle').value = news.title;
+      document.getElementById('inpSummary').value = news.summary || '';
+      document.getElementById('inpSource').value = news.source;
+      document.getElementById('inpSourceUrl').value = news.sourceUrl;
+      if (news.imageUrl) {
+        document.getElementById('inpImageUrl').value = news.imageUrl;
+      }
+      switchTab('studio');
+    }
+  </script>
+</body>
+</html>

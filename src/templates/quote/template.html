@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>PhotoCard - Quote</title>
+  <link rel="stylesheet" href="../styles/common.css">
+  <style>
+    .quote-container {
+      background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #030712 100%);
+      padding: 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .quote-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .quote-pill {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #030712;
+      font-weight: 800;
+      padding: 8px 20px;
+      border-radius: 9999px;
+      font-size: 19px;
+      letter-spacing: 0.5px;
+    }
+
+    .source-box-quote {
+      color: #cbd5e1;
+      font-size: 18px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 18px;
+      border-radius: 9999px;
+    }
+
+    .quote-body-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      z-index: 10;
+      margin: 20px 0;
+    }
+
+    .giant-quote-mark {
+      font-size: 120px;
+      line-height: 0.8;
+      font-family: Georgia, serif;
+      color: #f59e0b;
+      opacity: 0.85;
+      margin-bottom: -15px;
+    }
+
+    .quote-text {
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #ffffff;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .speaker-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 16px 24px;
+      width: fit-content;
+    }
+
+    .speaker-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #f59e0b;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .speaker-details h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .speaker-details p {
+      font-size: 16px;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    .quote-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+      z-index: 10;
+    }
+
+    .quote-date-box {
+      color: #94a3b8;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container {{aspectRatioClass}} quote-container">
+    <div class="quote-badge-row">
+      <div class="quote-pill">উদ্ধৃতি / বক্তব্য</div>
+      <div class="source-box-quote">{{source}}</div>
+    </div>
+
+    <div class="quote-body-area">
+      <div class="giant-quote-mark">“</div>
+      <h1 class="quote-text">{{title}}</h1>
+
+      <div class="speaker-profile-card">
+        <img class="speaker-avatar" src="{{imageUrl}}" alt="Speaker" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80'">
+        <div class="speaker-details">
+          <h2>{{category}}</h2>
+          <p>{{date}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-footer">
+      <div class="quote-date-box">
+        প্রতিবেদন লিংক স্ক্যান করে মূল খবর যাচাই করুন
+      </div>
+
+      <div class="qr-badge-container">
+        <img class="qr-code-img" src="{{qrCodeDataUrl}}" alt="QR Code">
+        <div class="qr-text-group">
+          <div class="qr-label-title">স্ক্যান করুন</div>
+          <div class="qr-label-subtitle">সোর্স ভেরিফিকেশন</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

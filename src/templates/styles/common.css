@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Anek+Bangla:wght@400;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Hind Siliguri', 'Anek Bangla', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-color: #0b0f19;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+/* Card Root container */
+.card-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #0f172a;
+}
+
+.card-container.square {
+  width: 1080px;
+  height: 1080px;
+}
+
+.card-container.portrait {
+  width: 1080px;
+  height: 1350px;
+}
+
+/* Base Gradient Overlays */
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.45) 0%,
+    rgba(15, 23, 42, 0.2) 30%,
+    rgba(15, 23, 42, 0.85) 65%,
+    rgba(8, 12, 22, 0.98) 85%,
+    #050811 100%
+  );
+}
+
+/* Glowing Accent Line */
+.accent-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, #dc2626, #f97316, #eab308);
+  z-index: 10;
+}
+
+/* QR Code Section Badge */
+.qr-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 10px 16px 10px 10px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.qr-code-img {
+  width: 78px;
+  height: 78px;
+  border-radius: 8px;
+  display: block;
+}
+
+.qr-text-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.qr-label-title {
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.qr-label-subtitle {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 3px;
+}
