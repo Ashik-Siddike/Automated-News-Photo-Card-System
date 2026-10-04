@@ -140,11 +140,30 @@
       gap: 6px;
     }
 
+    .brand-header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
     .brand-name {
       font-size: 22px;
       font-weight: 800;
       color: #ffffff;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .verified-mark {
@@ -197,8 +216,13 @@
       <!-- Footer Bar with QR and Branding -->
       <div class="footer-bar">
         <div class="branding-group">
-          <div class="brand-name">
-            {{brandName}} <span class="verified-mark">✓</span>
+          <div class="brand-header-row">
+            {{#brandLogoUrl}}
+            <img class="brand-logo-img" src="{{brandLogoUrl}}" alt="Logo">
+            {{/brandLogoUrl}}
+            <div class="brand-name">
+              {{brandName}} {{#showVerifiedBadge}}<span class="verified-mark">✓</span>{{/showVerifiedBadge}}
+            </div>
           </div>
           <div class="brand-tagline">{{brandTagline}}</div>
         </div>

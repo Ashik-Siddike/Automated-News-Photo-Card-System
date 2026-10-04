@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { NewsItem, NewsSourceConfig } from '../types';
 import { NEWS_SOURCES } from '../config/sources';
 import { cleanBengaliHeadline } from '../utils/bengali';
+import { getSettings } from '../config/settings';
 
 export class NewsFetcher {
   private parser: Parser;
@@ -24,7 +25,13 @@ export class NewsFetcher {
       }
     });
 
-    this.sources = customSources || NEWS_SOURCES.filter(s => s.enabled);
+    const settings = getSettings();
+    this.sources = customSources || NEWS_SOURCES.filter(s => {
+      if (settings.sources && settings.sources[s.code] !== undefined) {
+        return settings.sources[s.code];
+      }
+      return s.enabled;
+    });
   }
 
   /**

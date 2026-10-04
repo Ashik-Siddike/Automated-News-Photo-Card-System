@@ -1,17 +1,21 @@
 import { NewsItem } from '../types';
+import { getSettings } from '../config/settings';
 
 export class AISummarizer {
   private apiKey?: string;
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.GEMINI_API_KEY;
+    const settings = getSettings();
+    this.apiKey = apiKey || settings.apiKeys.geminiApiKey || process.env.GEMINI_API_KEY;
   }
 
   /**
    * Refine news headline and summary with Gemini API if available
    */
   public async polishNews(news: NewsItem): Promise<NewsItem> {
-    if (!this.apiKey) {
+    const settings = getSettings();
+    const effectiveKey = this.apiKey || settings.apiKeys.geminiApiKey;
+    if (!effectiveKey || settings.generation.enableAi === false) {
       return news;
     }
 
@@ -43,7 +47,7 @@ JSON ফরম্যাটে উত্তর দাও:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-goog-api-key': this.apiKey
+          'x-goog-api-key': effectiveKey
         },
         signal: controller.signal,
         body: JSON.stringify({

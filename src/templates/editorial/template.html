@@ -140,10 +140,22 @@
       color: white;
     }
 
+    .editorial-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3px;
+    }
+
     .brand-texts h3 {
       font-size: 20px;
       font-weight: 700;
       color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .brand-texts p {
@@ -181,9 +193,14 @@
     <!-- Footer with QR -->
     <div class="editorial-footer">
       <div class="editorial-brand-box">
+        {{#brandLogoUrl}}
+        <img class="editorial-logo-img" src="{{brandLogoUrl}}" alt="Logo">
+        {{/brandLogoUrl}}
+        {{^brandLogoUrl}}
         <div class="brand-icon">⚡</div>
+        {{/brandLogoUrl}}
         <div class="brand-texts">
-          <h3>{{brandName}}</h3>
+          <h3>{{brandName}} {{#showVerifiedBadge}}<span class="verified-mark" style="color: #38bdf8; font-size: 16px;">✓</span>{{/showVerifiedBadge}}</h3>
           <p>{{brandTagline}}</p>
         </div>
       </div>

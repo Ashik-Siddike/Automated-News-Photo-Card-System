@@ -9,14 +9,17 @@ import { NewsFetcher } from '../services/newsFetcher';
 import { CardRenderer } from '../services/cardRenderer';
 import { AISummarizer } from '../services/aiSummarizer';
 import { TelegramDispatcher } from '../services/telegramDispatcher';
+import { WebhookDispatcher } from '../services/webhookDispatcher';
 import { NewsItem, TemplateStyle, CardAspectRatio } from '../types';
+import { getSettings, saveSettings } from '../config/settings';
+import { NEWS_SOURCES } from '../config/sources';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '15mb' }));
+app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
 const outputDir = path.resolve(process.cwd(), 'output');
 if (!fs.existsSync(outputDir)) {
@@ -34,6 +37,7 @@ const fetcher = new NewsFetcher();
 const renderer = new CardRenderer();
 const summarizer = new AISummarizer();
 const dispatcher = new TelegramDispatcher();
+const webhookDispatcher = new WebhookDispatcher();
 
 // API 1: List all generated cards
 app.get('/api/cards', (req, res) => {
@@ -60,7 +64,9 @@ app.get('/api/cards', (req, res) => {
 // API 2: Fetch today's news from portals
 app.get('/api/news', async (req, res) => {
   try {
-    const news = await fetcher.fetchAllNews(24);
+    // Instantiate fresh news fetcher to use dynamic active sources
+    const activeFetcher = new NewsFetcher();
+    const news = await activeFetcher.fetchAllNews(24);
     res.json({ success: true, count: news.length, news });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
@@ -79,12 +85,15 @@ app.post('/api/generate', async (req, res) => {
       category,
       style,
       aspectRatio,
-      sendTelegram
+      sendTelegram,
+      branding
     } = req.body;
 
     if (!title || !sourceUrl) {
       return res.status(400).json({ success: false, error: 'শিরোনাম এবং সোর্স URL আবশ্যক।' });
     }
+
+    const settings = getSettings();
 
     let news: NewsItem = {
       id: 'custom-' + Date.now(),
@@ -102,8 +111,9 @@ app.post('/api/generate', async (req, res) => {
 
     const result = await renderer.renderCard({
       news,
-      style: (style as TemplateStyle) || 'breaking',
-      aspectRatio: (aspectRatio as CardAspectRatio) || 'square'
+      style: (style as TemplateStyle) || settings.generation.defaultStyle || 'breaking',
+      aspectRatio: (aspectRatio as CardAspectRatio) || settings.generation.defaultAspectRatio || 'square',
+      branding
     });
 
     let telegramSent = false;
@@ -126,9 +136,103 @@ app.post('/api/generate', async (req, res) => {
   }
 });
 
+// API 4: Get All Settings
+app.get('/api/settings', (req, res) => {
+  try {
+    const settings = getSettings();
+    res.json({ success: true, settings });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// API 5: Update Settings
+app.post('/api/settings', (req, res) => {
+  try {
+    const updated = saveSettings(req.body);
+    res.json({ success: true, settings: updated, message: 'সেটিংস সফলভাবে সংরক্ষিত হয়েছে!' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// API 6: Upload Brand Logo
+app.post('/api/upload-logo', (req, res) => {
+  try {
+    const { logoData } = req.body;
+    if (!logoData) {
+      return res.status(400).json({ success: false, error: 'লোগো ডাটা পাওয়া যায়নি।' });
+    }
+
+    // Save as local file in output/brand-logo.png
+    if (logoData.startsWith('data:image/')) {
+      const base64Data = logoData.replace(/^data:image\/\w+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      const logoFilePath = path.join(outputDir, 'brand-logo.png');
+      fs.writeFileSync(logoFilePath, buffer);
+    }
+
+    // Update settings directly
+    saveSettings({
+      branding: {
+        ...getSettings().branding,
+        brandLogoUrl: logoData
+      }
+    });
+
+    res.json({
+      success: true,
+      logoUrl: logoData,
+      message: 'লোগো সফলভাবে আপলোড ও যুক্ত হয়েছে!'
+    });
+  } catch (error: any) {
+    console.error('Upload logo error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// API 7: Test Telegram Message
+app.post('/api/test-telegram', async (req, res) => {
+  try {
+    const { message } = req.body;
+    const testResult = await dispatcher.sendTestMessage(
+      message || 'নিউজ ফটো-কার্ড অটোমেশন সিস্টেম থেকে সফল টেস্ট বার্তা!'
+    );
+    res.json(testResult);
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// API 8: Test Zapier / Webhook
+app.post('/api/test-webhook', async (req, res) => {
+  try {
+    const { webhookUrl } = req.body;
+    const testResult = await webhookDispatcher.sendTestPayload(webhookUrl);
+    res.json(testResult);
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// API 9: Get Sources Status
+app.get('/api/sources', (req, res) => {
+  try {
+    const settings = getSettings();
+    const sourcesWithStatus = NEWS_SOURCES.map(source => ({
+      ...source,
+      enabled: settings.sources[source.code] !== undefined ? settings.sources[source.code] : source.enabled
+    }));
+    res.json({ success: true, sources: sourcesWithStatus });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`\n======================================================`);
   console.log(`🌐 নিউজ ফটো কার্ড ড্যাশবোর্ড চালু হয়েছে!`);
   console.log(`📍 ব্রাউজারে দেখুন: http://localhost:${port}`);
+  console.log(`⚙️ কন্ট্রোল প্যানেল: http://localhost:${port}#control-panel`);
   console.log(`======================================================\n`);
 });

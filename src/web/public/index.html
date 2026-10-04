@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>নিউজ ফটো-কার্ড অটোমেশন স্টুডিও</title>
+  <title>নিউজ ফটো-কার্ড অটোমেশন ও কন্ট্রোল প্যানেল</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@
       --card-border: #1f2937;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
+      --success: #10b981;
       --accent-red: #ef4444;
       --accent-amber: #f59e0b;
       --text: #f8fafc;
@@ -36,8 +37,8 @@
     }
 
     header {
-      background: rgba(17, 24, 39, 0.8);
-      backdrop-filter: blur(12px);
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--card-border);
       position: sticky;
       top: 0;
@@ -46,6 +47,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     .brand-title {
@@ -55,6 +58,14 @@
       font-size: 22px;
       font-weight: 800;
       color: white;
+    }
+
+    .header-logo-thumb {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: none;
     }
 
     .brand-badge {
@@ -68,7 +79,8 @@
 
     .nav-tabs {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
@@ -76,18 +88,27 @@
       border: 1px solid transparent;
       color: var(--text-muted);
       font-family: inherit;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
-      padding: 8px 18px;
+      padding: 8px 16px;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .tab-btn.active, .tab-btn:hover {
       background: rgba(255, 255, 255, 0.08);
       color: white;
       border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
     }
 
     main {
@@ -106,12 +127,18 @@
       display: block;
     }
 
-    /* Studio Grid */
+    /* Studio Layout */
     .studio-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 32px;
       align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .studio-layout, .settings-grid {
+        grid-template-columns: 1fr !important;
+      }
     }
 
     .panel-card {
@@ -149,21 +176,17 @@
       background: #0b1120;
       border: 1px solid #1e293b;
       color: white;
-      font-family: inherit;
-      font-size: 16px;
       padding: 12px 16px;
       border-radius: 10px;
-      outline: none;
-      transition: border-color 0.2s;
+      font-family: inherit;
+      font-size: 15px;
+      transition: border-color 0.2s ease;
     }
 
     .form-control:focus {
-      border-color: var(--primary);
-    }
-
-    textarea.form-control {
-      min-height: 80px;
-      resize: vertical;
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
 
     .form-row {
@@ -174,32 +197,39 @@
 
     .btn-submit {
       width: 100%;
-      background: linear-gradient(135deg, var(--primary), #3b82f6);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: white;
       border: none;
       padding: 14px 24px;
       border-radius: 12px;
       font-family: inherit;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      transition: all 0.2s;
-      margin-top: 10px;
+      transition: all 0.2s ease;
       box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      margin-top: 10px;
     }
 
     .btn-submit:hover {
-      background: linear-gradient(135deg, var(--primary-hover), #2563eb);
-      transform: translateY(-2px);
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
     }
 
-    /* Preview area */
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Preview Panel */
     .preview-card {
-      text-align: center;
+      position: sticky;
+      top: 100px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -207,15 +237,14 @@
 
     .preview-image-box {
       width: 100%;
-      max-width: 520px;
-      aspect-ratio: 1 / 1;
-      background: #0b1120;
+      aspect-ratio: 1/1;
+      background: #070b14;
       border: 2px dashed #1e293b;
       border-radius: 16px;
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       position: relative;
     }
 
@@ -227,39 +256,44 @@
     }
 
     .placeholder-text {
-      color: #64748b;
-      font-size: 16px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 24px;
+      font-size: 15px;
     }
 
     .preview-actions {
       display: flex;
       gap: 12px;
-      margin-top: 18px;
       width: 100%;
-      max-width: 520px;
+      margin-top: 20px;
     }
 
     .btn-action {
       flex: 1;
-      padding: 10px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
       color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
       font-family: inherit;
       font-size: 15px;
       font-weight: 600;
-      cursor: pointer;
       text-decoration: none;
       text-align: center;
-      transition: all 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
     }
 
     .btn-action:hover {
-      background: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Gallery Grid */
+    /* Gallery & Live News */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -271,12 +305,11 @@
       border: 1px solid var(--card-border);
       border-radius: 16px;
       overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s;
     }
 
     .gallery-item:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
     }
 
     .gallery-thumb {
@@ -284,7 +317,6 @@
       aspect-ratio: 1/1;
       object-fit: cover;
       display: block;
-      cursor: pointer;
     }
 
     .gallery-info {
@@ -292,61 +324,369 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .gallery-info span {
       font-size: 14px;
       color: var(--text-muted);
     }
 
-    /* Live News List */
     .news-list {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }
 
     .news-card-row {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 18px 24px;
+      border-radius: 16px;
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .news-card-row:hover {
+      border-color: #38bdf8;
     }
 
     .news-row-content h3 {
-      font-size: 19px;
-      font-weight: 700;
-      margin-bottom: 6px;
+      font-size: 18px;
+      margin-bottom: 8px;
+      line-height: 1.4;
     }
 
     .news-row-meta {
+      display: flex;
+      gap: 16px;
       font-size: 14px;
       color: var(--text-muted);
-      display: flex;
-      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .btn-generate-row {
       background: #0284c7;
       color: white;
       border: none;
-      padding: 8px 18px;
+      padding: 10px 18px;
       border-radius: 8px;
       font-family: inherit;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
+      transition: background 0.2s;
     }
 
     .btn-generate-row:hover {
       background: #0369a1;
     }
 
-    /* Spinner */
+    /* CONTROL PANEL STYLES */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .settings-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      margin-bottom: 24px;
+    }
+
+    .settings-section-title {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .toggle-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Modern Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2563eb;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+    /* Logo Upload Dropzone */
+    .logo-upload-box {
+      border: 2px dashed #334155;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      background: #0b1120;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .logo-upload-box:hover {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.03);
+    }
+
+    .logo-preview-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 14px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .logo-preview-img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px;
+    }
+
+    .logo-preview-meta {
+      flex: 1;
+    }
+
+    .btn-remove-logo {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 600;
+    }
+
+    .btn-remove-logo:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    /* Live Card Footer Preview Widget */
+    .live-preview-widget {
+      background: #050811;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .preview-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .preview-brand-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px;
+    }
+
+    .preview-brand-text h4 {
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preview-brand-text p {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .preview-qr-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 6px 12px 6px 8px;
+      border-radius: 12px;
+    }
+
+    .preview-qr-badge img {
+      width: 38px;
+      height: 38px;
+      border-radius: 4px;
+    }
+
+    .preview-qr-text {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* Input Password with Eye Toggle */
+    .input-wrapper-relative {
+      position: relative;
+    }
+
+    .btn-toggle-eye {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* News Sources Grid */
+    .sources-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .source-item-card {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .source-item-card span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Save Bar */
+    .save-settings-bar {
+      position: sticky;
+      bottom: 24px;
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 16px 28px;
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      z-index: 40;
+    }
+
+    .save-status-msg {
+      font-size: 15px;
+      font-weight: 600;
+      color: #10b981;
+      display: none;
+    }
+
+    .btn-save-primary {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-save-primary:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-1px);
+    }
+
     .spinner {
       border: 3px solid rgba(255, 255, 255, 0.2);
       border-top: 3px solid white;
@@ -366,13 +706,15 @@
 <body>
   <header>
     <div class="brand-title">
-      <span>📰 সংবাদ ফটো-কার্ড স্টুডিও</span>
+      <img id="headerLogo" class="header-logo-thumb" src="" alt="Brand Logo">
+      <span id="headerBrandName">📰 সত্য সংবাদ ফটো-কার্ড স্টুডিও</span>
       <span class="brand-badge">অটোমেশন লাইভ</span>
     </div>
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('studio')">🎨 কার্ড জেনারেটর</button>
       <button class="tab-btn" onclick="switchTab('live-news')">📡 আজকের লাইভ সংবাদ</button>
       <button class="tab-btn" onclick="switchTab('gallery')">🖼️ তৈরি হওয়া কার্ড গ্যালারি</button>
+      <button class="tab-btn" onclick="switchTab('control-panel')">⚙️ কন্ট্রোল প্যানেল</button>
     </div>
   </header>
 
@@ -451,6 +793,13 @@
               </div>
             </div>
 
+            <div class="form-group" style="margin-top: 6px;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="inpSendTelegram" style="width: 18px; height: 18px;">
+                <span>তৈরি হওয়ার সাথে সাথে সরাসরি টেলিগ্রাম চ্যানেলে পোস্ট করুন</span>
+              </label>
+            </div>
+
             <button type="submit" id="btnSubmit" class="btn-submit">
               <div id="spinner" class="spinner"></div>
               <span id="btnText">✨ ফটো কার্ড তৈরি করুন</span>
@@ -498,21 +847,571 @@
         <p style="color: var(--text-muted); text-align: center; grid-column: 1/-1; padding: 40px;">কোনো ফটো কার্ড পাওয়া যায়নি</p>
       </div>
     </div>
+
+    <!-- TAB 4: CONTROL PANEL -->
+    <div id="tab-control-panel" class="tab-content">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 26px; font-weight: 800; color: white;">⚙️ সিস্টেম কন্ট্রোল প্যানেল ও ব্র্যান্ডিং কনফিগারেশন</h2>
+        <p style="color: var(--text-muted); font-size: 15px; margin-top: 4px;">এখান থেকে আপনার ব্র্যান্ডের নাম, লোগো ইমেজ, এআই কি, টেলিগ্রাম বট ও কার্ডের সব সেটিংস নিয়ন্ত্রণ করুন।</p>
+      </div>
+
+      <div class="settings-grid">
+        <!-- Left Column: Branding & Defaults -->
+        <div>
+          <!-- Card 1: Branding -->
+          <div class="settings-card">
+            <div class="settings-section-title">
+              <span>🏷️ ব্র্যান্ড আইডেন্টিটি ও লোগো সেটিংস</span>
+            </div>
+
+            <div class="form-group">
+              <label>ব্র্যান্ড / পেজ / চ্যানেলের নাম (Brand Name)</label>
+              <input type="text" id="setBrandName" class="form-control" placeholder="যেমন: সত্য সংবাদ বা দেশ বার্তা" oninput="updateLiveBrandPreview()">
+            </div>
+
+            <div class="form-group">
+              <label>স্লোগান বা ট্যাগলাইন (Brand Tagline)</label>
+              <input type="text" id="setBrandTagline" class="form-control" placeholder="যেমন: স্বয়ংক্রিয় সংবাদ তথ্য কার্ড • নির্ভুল ও দ্রুত" oninput="updateLiveBrandPreview()">
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-title">ভেরিফায়েড নীল টিক চিহ্ন (Verified Badge)</div>
+                <div class="toggle-desc">নামের পাশে ফেসবুক/টুইটার স্টাইলের নীল ভেরিফাইড ব্যাজ দেখাবে</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="setShowVerified" onchange="updateLiveBrandPreview()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Logo Upload Section -->
+            <div class="form-group" style="margin-top: 18px;">
+              <label>লোগো ছবি (Brand Logo Image)</label>
+              <div class="logo-upload-box" onclick="document.getElementById('logoFileInput').click()">
+                <input type="file" id="logoFileInput" accept="image/*" style="display: none;" onchange="handleLogoFileUpload(event)">
+                <div style="font-size: 30px; margin-bottom: 8px;">🖼️</div>
+                <div style="font-weight: 600; color: white; font-size: 15px;">লোগো আপলোড করতে এখানে ক্লিক করুন</div>
+                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">PNG, JPG, SVG বা WebP ফরম্যাট (স্বচ্ছ ব্যাকগ্রাউন্ড সবচেয়ে ভালো দেখায়)</div>
+              </div>
+
+              <!-- Or URL Input -->
+              <div style="margin-top: 10px;">
+                <input type="url" id="setLogoUrl" class="form-control" placeholder="অথবা লোগোর সরাসরি অনলাইন লিঙ্ক দিন (https://.../logo.png)" oninput="handleLogoUrlInput()">
+              </div>
+
+              <!-- Logo Preview Container -->
+              <div id="logoPreviewContainer" class="logo-preview-container" style="display: none;">
+                <img id="logoPreviewThumb" class="logo-preview-img" src="" alt="Logo">
+                <div class="logo-preview-meta">
+                  <div style="font-weight: 700; color: white; font-size: 14px;">বর্তমান লোগো যুক্ত আছে</div>
+                  <div style="font-size: 12px; color: #10b981;">ফটো কার্ডে প্রদর্শনের জন্য প্রস্তুত</div>
+                </div>
+                <button type="button" class="btn-remove-logo" onclick="removeLogo()">🗑️ রিমুভ করুন</button>
+              </div>
+            </div>
+
+            <!-- Realtime Footer Preview Widget -->
+            <div style="margin-top: 20px;">
+              <label style="font-size: 14px; font-weight: 700; color: #38bdf8;">ফটো কার্ডে নিচের অংশটি যেভাবে দেখাবে (লাইভ প্রিভিউ):</label>
+              <div class="live-preview-widget">
+                <div class="preview-brand-group">
+                  <img id="previewWidgetLogo" class="preview-brand-logo" src="" alt="Logo" style="display: none;">
+                  <div class="preview-brand-text">
+                    <h4><span id="previewWidgetName">সত্য সংবাদ</span> <span id="previewWidgetBadge" style="color: #38bdf8;">✓</span></h4>
+                    <p id="previewWidgetTagline">স্বয়ংক্রিয় সংবাদ তথ্য কার্ড • নির্ভুল ও দ্রুত</p>
+                  </div>
+                </div>
+                <div class="preview-qr-badge">
+                  <div style="font-size: 26px; line-height: 1;">📱</div>
+                  <div class="preview-qr-text">
+                    <div>স্ক্যান করুন</div>
+                    <div style="font-size: 10px; color: #475569;">মূল খবর</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Defaults -->
+          <div class="settings-card">
+            <div class="settings-section-title">
+              <span>📐 কার্ড ডিফল্ট ফরম্যাট সেটিংস</span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>ডিফল্ট টেমপ্লেট স্টাইল</label>
+                <select id="setDefaultStyle" class="form-control">
+                  <option value="breaking">ব্রেকিং নিউজ (Breaking)</option>
+                  <option value="editorial">এডিটরিয়াল (Editorial)</option>
+                  <option value="quote">উদ্ধৃতি / বক্তব্য (Quote)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ডিফল্ট অ্যাসপেক্ট রেশিও</label>
+                <select id="setDefaultRatio" class="form-control">
+                  <option value="square">১:১ স্কয়ার (১০৮০x১০৮০)</option>
+                  <option value="portrait">৪:৫ পোর্ট্রেট (১০৮০x১৩৫০)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>প্রতিবার স্বয়ংক্রিয় কার্ড তৈরির সর্বোচ্চ সংখ্যা (Max Cards)</label>
+              <input type="number" id="setMaxCards" class="form-control" min="1" max="10" value="3">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: AI, Telegram, News Sources -->
+        <div>
+          <!-- Card 3: AI Configuration -->
+          <div class="settings-card">
+            <div class="settings-section-title">
+              <span>🤖 গুগল জেমিনি এআই (Gemini AI) কনফিগারেশন</span>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-title">এআই দিয়ে শিরোনাম ও সারসংক্ষেপ তৈরি</div>
+                <div class="toggle-desc">লম্বা খবরকে সংক্ষেপ করে ২-লাইনের আকর্ষণীয় শিরোনাম তৈরি করবে</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="setEnableAi" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="form-group" style="margin-top: 14px;">
+              <label>গুগল জেমিনি এপিআই কি (Gemini API Key)</label>
+              <div class="input-wrapper-relative">
+                <input type="password" id="setGeminiApiKey" class="form-control" placeholder="AI Studio থেকে পাওয়া এপিআই কি দিন">
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('setGeminiApiKey')">👁️</button>
+              </div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                💡 বিনামূল্যে এপিআই কি পেতে পারেন: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #38bdf8; text-decoration: underline;">Google AI Studio</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Telegram Automation -->
+          <div class="settings-card">
+            <div class="settings-section-title">
+              <span>✈️ টেলিগ্রাম অটোমেশন (Telegram Dispatcher)</span>
+            </div>
+
+            <div class="form-group">
+              <label>টেলিগ্রাম বট টোকেন (Telegram Bot Token)</label>
+              <div class="input-wrapper-relative">
+                <input type="password" id="setTelegramToken" class="form-control" placeholder="যেমন: 123456789:ABCdefGhIJKlmNoPQR">
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('setTelegramToken')">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>টেলিগ্রাম চ্যানেল বা চ্যাট আইডি (Chat / Channel ID)</label>
+              <input type="text" id="setTelegramChatId" class="form-control" placeholder="যেমন: @your_channel_name অথবা 7128554522">
+            </div>
+
+            <div class="form-group">
+              <label>টেলিগ্রাম পোস্ট সিগনেচার (Caption Signature)</label>
+              <input type="text" id="setTelegramSignature" class="form-control" placeholder="যেমন: ⚡ সত্য সংবাদ রোবট দ্বারা স্বয়ংক্রিয়ভাবে তৈরি">
+            </div>
+
+            <div style="margin-top: 16px;">
+              <button type="button" class="btn-action" style="width: 100%; border-color: #38bdf8; color: #38bdf8;" onclick="testTelegramConnection()">
+                🧪 টেলিগ্রাম সংযোগ পরীক্ষা করুন (Test Bot)
+              </button>
+              <div id="telegramTestResult" style="display: none; margin-top: 10px; font-size: 14px; padding: 10px; border-radius: 8px;"></div>
+            </div>
+          </div>
+
+          <!-- Card 4.5: Zapier / Webhook Automation -->
+          <div class="settings-card">
+            <div class="settings-section-title">
+              <span>⚡ Zapier / Social Webhook অটোমেশন</span>
+            </div>
+            <div class="form-group">
+              <label>Zapier Catch Hook URL (ঐচ্ছিক)</label>
+              <input type="url" id="setZapierWebhook" class="form-control" placeholder="https://hooks.zapier.com/hooks/catch/...">
+              <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                💡 Zapier বা Make.com-এর Webhook লিঙ্ক দিলে কার্ড তৈরির সাথে সাথে ফেসবুক পেজ, টুইটার বা অন্য সোশ্যাল মিডিয়ায় পোস্ট চলে যাবে।
+              </div>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <button type="button" class="btn-action" style="width: 100%; border-color: #f59e0b; color: #f59e0b;" onclick="testWebhookConnection()">
+                🧪 Zapier-এ টেস্ট ডেটা পাঠান (Test Webhook)
+              </button>
+              <div id="webhookTestResult" style="display: none; margin-top: 10px; font-size: 14px; padding: 10px; border-radius: 8px;"></div>
+            </div>
+          </div>
+
+          <!-- Card 5: News Sources Toggle -->
+          <div class="settings-card">
+            <div class="settings-section-title">
+              <span>📡 সক্রিয় নিউজ পোর্টাল নির্বাচন (Active Sources)</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">যেসব সংবাদ পোর্টাল থেকে অটোমেশনের জন্য খবর সংগ্রহ করতে চান সেগুলো চালু রাখুন:</p>
+
+            <div id="sourcesToggleContainer" class="sources-grid">
+              <!-- Dynamically populated from API -->
+              <p style="color: var(--text-muted); font-size: 14px;">সোর্স তালিকা লোড হচ্ছে...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Save Bar -->
+      <div class="save-settings-bar">
+        <div>
+          <span id="saveStatusText" class="save-status-msg">✅ সেটিংস সফলভাবে সংরক্ষিত হয়েছে!</span>
+        </div>
+        <button type="button" class="btn-save-primary" onclick="saveAllSettings()">
+          <span>💾 সমস্ত সেটিংস সংরক্ষণ করুন</span>
+        </button>
+      </div>
+    </div>
   </main>
 
   <script>
+    let globalSettings = null;
+    let globalLogoDataUrl = '';
+
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 
-      event.target.classList.add('active');
-      document.getElementById('tab-' + tabName).classList.add('active');
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick')?.includes(tabName));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const targetTab = document.getElementById('tab-' + tabName);
+      if (targetTab) targetTab.classList.add('active');
 
       if (tabName === 'gallery') loadGallery();
       if (tabName === 'live-news') loadLiveNews();
+      if (tabName === 'control-panel') loadControlPanel();
     }
 
-    // Generate Card Handler
+    // Toggle password fields
+    function togglePasswordVisibility(inputId) {
+      const inp = document.getElementById(inputId);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+
+    // Load Settings into Control Panel
+    async function loadControlPanel() {
+      try {
+        const [settingsRes, sourcesRes] = await Promise.all([
+          fetch('/api/settings'),
+          fetch('/api/sources')
+        ]);
+
+        const settingsData = await settingsRes.json();
+        const sourcesData = await sourcesRes.json();
+
+        if (settingsData.success) {
+          globalSettings = settingsData.settings;
+          populateSettingsForm(globalSettings);
+        }
+
+        if (sourcesData.success) {
+          renderSourcesList(sourcesData.sources);
+        }
+      } catch (err) {
+        console.error('Error loading control panel:', err);
+      }
+    }
+
+    function populateSettingsForm(s) {
+      document.getElementById('setBrandName').value = s.branding?.brandName || '';
+      document.getElementById('setBrandTagline').value = s.branding?.brandTagline || '';
+      document.getElementById('setShowVerified').checked = s.branding?.showVerifiedBadge !== false;
+      document.getElementById('setTelegramSignature').value = s.branding?.telegramSignature || '';
+
+      document.getElementById('setDefaultStyle').value = s.generation?.defaultStyle || 'breaking';
+      document.getElementById('setDefaultRatio').value = s.generation?.defaultAspectRatio || 'square';
+      document.getElementById('setMaxCards').value = s.generation?.maxCardsPerRun || 3;
+
+      document.getElementById('setEnableAi').checked = s.generation?.enableAi !== false;
+      document.getElementById('setGeminiApiKey').value = s.apiKeys?.geminiApiKey || '';
+
+      document.getElementById('setTelegramToken').value = s.apiKeys?.telegramBotToken || '';
+      document.getElementById('setTelegramChatId').value = s.apiKeys?.telegramChatId || '';
+      document.getElementById('setZapierWebhook').value = s.apiKeys?.zapierWebhookUrl || '';
+
+      // Set Logo
+      globalLogoDataUrl = s.branding?.brandLogoUrl || '';
+      if (globalLogoDataUrl) {
+        setLogoDisplay(globalLogoDataUrl);
+      } else {
+        clearLogoDisplay();
+      }
+
+      updateLiveBrandPreview();
+      updateHeaderBranding(s.branding?.brandName, globalLogoDataUrl);
+    }
+
+    function updateHeaderBranding(name, logoUrl) {
+      if (name) {
+        document.getElementById('headerBrandName').innerText = '📰 ' + name + ' ফটো-কার্ড স্টুডিও';
+      }
+      const headerLogo = document.getElementById('headerLogo');
+      if (logoUrl) {
+        headerLogo.src = logoUrl;
+        headerLogo.style.display = 'block';
+      } else {
+        headerLogo.style.display = 'none';
+      }
+    }
+
+    function renderSourcesList(sources) {
+      const container = document.getElementById('sourcesToggleContainer');
+      container.innerHTML = sources.map(src => `
+        <div class="source-item-card">
+          <span>${src.name}</span>
+          <label class="switch">
+            <input type="checkbox" class="source-toggle-input" data-code="${src.code}" ${src.enabled ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        </div>
+      `).join('');
+    }
+
+    // Logo Upload & Handling
+    function handleLogoFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        globalLogoDataUrl = dataUrl;
+        document.getElementById('setLogoUrl').value = '';
+        setLogoDisplay(dataUrl);
+        updateLiveBrandPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleLogoUrlInput() {
+      const url = document.getElementById('setLogoUrl').value.trim();
+      if (url) {
+        globalLogoDataUrl = url;
+        setLogoDisplay(url);
+        updateLiveBrandPreview();
+      }
+    }
+
+    function setLogoDisplay(src) {
+      const container = document.getElementById('logoPreviewContainer');
+      const thumb = document.getElementById('logoPreviewThumb');
+      thumb.src = src;
+      container.style.display = 'flex';
+
+      const previewLogo = document.getElementById('previewWidgetLogo');
+      previewLogo.src = src;
+      previewLogo.style.display = 'block';
+    }
+
+    function clearLogoDisplay() {
+      document.getElementById('logoPreviewContainer').style.display = 'none';
+      document.getElementById('logoPreviewThumb').src = '';
+      document.getElementById('previewWidgetLogo').style.display = 'none';
+      document.getElementById('previewWidgetLogo').src = '';
+    }
+
+    function removeLogo() {
+      globalLogoDataUrl = '';
+      document.getElementById('setLogoUrl').value = '';
+      document.getElementById('logoFileInput').value = '';
+      clearLogoDisplay();
+      updateLiveBrandPreview();
+    }
+
+    // Live preview update
+    function updateLiveBrandPreview() {
+      const name = document.getElementById('setBrandName').value.trim() || 'আপনার ব্র্যান্ডের নাম';
+      const tagline = document.getElementById('setBrandTagline').value.trim() || 'স্বয়ংক্রিয় সংবাদ তথ্য কার্ড • নির্ভুল ও দ্রুত';
+      const showBadge = document.getElementById('setShowVerified').checked;
+
+      document.getElementById('previewWidgetName').innerText = name;
+      document.getElementById('previewWidgetTagline').innerText = tagline;
+      document.getElementById('previewWidgetBadge').style.display = showBadge ? 'inline' : 'none';
+
+      const previewLogo = document.getElementById('previewWidgetLogo');
+      if (globalLogoDataUrl) {
+        previewLogo.src = globalLogoDataUrl;
+        previewLogo.style.display = 'block';
+      } else {
+        previewLogo.style.display = 'none';
+      }
+    }
+
+    // Save All Settings
+    async function saveAllSettings() {
+      const sourcesMap = {};
+      document.querySelectorAll('.source-toggle-input').forEach(chk => {
+        sourcesMap[chk.getAttribute('data-code')] = chk.checked;
+      });
+
+      const payload = {
+        branding: {
+          brandName: document.getElementById('setBrandName').value.trim(),
+          brandTagline: document.getElementById('setBrandTagline').value.trim(),
+          brandLogoUrl: globalLogoDataUrl,
+          showVerifiedBadge: document.getElementById('setShowVerified').checked,
+          telegramSignature: document.getElementById('setTelegramSignature').value.trim()
+        },
+        generation: {
+          defaultStyle: document.getElementById('setDefaultStyle').value,
+          defaultAspectRatio: document.getElementById('setDefaultRatio').value,
+          maxCardsPerRun: parseInt(document.getElementById('setMaxCards').value, 10) || 3,
+          enableAi: document.getElementById('setEnableAi').checked
+        },
+        apiKeys: {
+          geminiApiKey: document.getElementById('setGeminiApiKey').value.trim(),
+          telegramBotToken: document.getElementById('setTelegramToken').value.trim(),
+          telegramChatId: document.getElementById('setTelegramChatId').value.trim(),
+          zapierWebhookUrl: document.getElementById('setZapierWebhook').value.trim()
+        },
+        sources: sourcesMap
+      };
+
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          const statusText = document.getElementById('saveStatusText');
+          statusText.innerText = '✅ ' + (data.message || 'সেটিংস সফলভাবে সংরক্ষিত হয়েছে!');
+          statusText.style.display = 'block';
+          updateHeaderBranding(payload.branding.brandName, globalLogoDataUrl);
+
+          setTimeout(() => {
+            statusText.style.display = 'none';
+          }, 4000);
+        } else {
+          alert('ত্রুটি: ' + data.error);
+        }
+      } catch (err) {
+        alert('নেটওয়ার্ক ত্রুটি: ' + err.message);
+      }
+    }
+
+    // Test Telegram Connection
+    async function testTelegramConnection() {
+      const resBox = document.getElementById('telegramTestResult');
+      resBox.style.display = 'block';
+      resBox.style.background = '#0b1120';
+      resBox.style.color = 'var(--text-muted)';
+      resBox.innerText = '⏳ টেলিগ্রাম সংযোগ পরীক্ষা করা হচ্ছে...';
+
+      // First save current telegram keys
+      const token = document.getElementById('setTelegramToken').value.trim();
+      const chatId = document.getElementById('setTelegramChatId').value.trim();
+      const sig = document.getElementById('setTelegramSignature').value.trim();
+
+      if (!token || !chatId) {
+        resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        resBox.style.color = '#ef4444';
+        resBox.innerText = '❌ অনুগ্রহ করে Bot Token এবং Chat ID প্রবেশ করান।';
+        return;
+      }
+
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKeys: {
+            telegramBotToken: token,
+            telegramChatId: chatId
+          },
+          branding: {
+            telegramSignature: sig
+          }
+        })
+      });
+
+      try {
+        const res = await fetch('/api/test-telegram', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'নিউজ ফটো-কার্ড অটোমেশন কন্ট্রোল প্যানেল থেকে সফল টেস্ট বার্তা!' })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          resBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          resBox.style.color = '#10b981';
+          resBox.innerText = '✅ অভিনন্দন! আপনার টেলিগ্রাম চ্যানেল বা বটে সফলভাবে বার্তা পাঠানো হয়েছে!';
+        } else {
+          resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          resBox.style.color = '#ef4444';
+          resBox.innerText = '❌ টেলিগ্রাম ত্রুটি: ' + data.message;
+        }
+      } catch (err) {
+        resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        resBox.style.color = '#ef4444';
+        resBox.innerText = '❌ নেটওয়ার্ক ত্রুটি: ' + err.message;
+      }
+    }
+
+    // Test Zapier / Webhook Connection
+    async function testWebhookConnection() {
+      const resBox = document.getElementById('webhookTestResult');
+      resBox.style.display = 'block';
+      resBox.style.background = '#0b1120';
+      resBox.style.color = 'var(--text-muted)';
+      resBox.innerText = '⏳ Zapier-এ টেস্ট ডেটা পাঠানো হচ্ছে...';
+
+      const webhookUrl = document.getElementById('setZapierWebhook').value.trim();
+      if (!webhookUrl) {
+        resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        resBox.style.color = '#ef4444';
+        resBox.innerText = '❌ অনুগ্রহ করে Zapier Webhook URL দিন।';
+        return;
+      }
+
+      // Save webhook URL first
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKeys: { zapierWebhookUrl: webhookUrl }
+        })
+      });
+
+      try {
+        const res = await fetch('/api/test-webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ webhookUrl })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          resBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          resBox.style.color = '#10b981';
+          resBox.innerText = '✅ সফল! Zapier-এ টেস্ট ডেটা পাঠানো হয়েছে। এবার Zapier-এ "Test trigger" ক্লিক করুন!';
+        } else {
+          resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          resBox.style.color = '#ef4444';
+          resBox.innerText = '❌ ত্রুটি: ' + data.message;
+        }
+      } catch (err) {
+        resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        resBox.style.color = '#ef4444';
+        resBox.innerText = '❌ নেটওয়ার্ক ত্রুটি: ' + err.message;
+      }
+    }
+
+    // Generate Card Handler (Studio)
     async function generateCard(e) {
       e.preventDefault();
 
@@ -532,7 +1431,8 @@
         sourceUrl: document.getElementById('inpSourceUrl').value,
         imageUrl: document.getElementById('inpImageUrl').value,
         style: document.getElementById('inpStyle').value,
-        aspectRatio: document.getElementById('inpAspectRatio').value
+        aspectRatio: document.getElementById('inpAspectRatio').value,
+        sendTelegram: document.getElementById('inpSendTelegram').checked
       };
 
       try {
@@ -557,6 +1457,10 @@
           btnOpenFull.href = data.card.url;
 
           document.getElementById('previewActions').style.display = 'flex';
+
+          if (data.card.telegramSent) {
+            alert('🎉 ফটো কার্ড সফলভাবে তৈরি হয়েছে এবং আপনার টেলিগ্রাম চ্যানেলে পোস্ট করা হয়েছে!');
+          }
         } else {
           alert('ত্রুটি: ' + data.error);
         }
@@ -637,6 +1541,29 @@
       }
       switchTab('studio');
     }
+
+    // On initial page load: fetch settings to update header branding
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        if (data.success && data.settings) {
+          globalSettings = data.settings;
+          updateHeaderBranding(data.settings.branding?.brandName, data.settings.branding?.brandLogoUrl);
+          if (data.settings.generation?.defaultStyle) {
+            document.getElementById('inpStyle').value = data.settings.generation.defaultStyle;
+          }
+          if (data.settings.generation?.defaultAspectRatio) {
+            document.getElementById('inpAspectRatio').value = data.settings.generation.defaultAspectRatio;
+          }
+        }
+      } catch (e) {}
+
+      // Handle hash routing if present
+      if (window.location.hash === '#control-panel') {
+        switchTab('control-panel');
+      }
+    });
   </script>
 </body>
 </html>

@@ -31,6 +31,12 @@ export interface RenderCardOptions {
   style?: TemplateStyle;
   aspectRatio?: CardAspectRatio;
   outputPath?: string;
+  branding?: {
+    brandName?: string;
+    brandTagline?: string;
+    brandLogoUrl?: string;
+    showVerifiedBadge?: boolean;
+  };
 }
 
 export interface RenderResult {
@@ -39,4 +45,5 @@ export interface RenderResult {
   aspectRatio: CardAspectRatio;
   style: TemplateStyle;
   news: NewsItem;
+  publicPhotoUrl?: string;
 }

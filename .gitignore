@@ -9,6 +9,7 @@ dist/
 .env.development
 .env.production
 !.env.example
+data/settings.json
 
 # Logs & debug files
 *.log

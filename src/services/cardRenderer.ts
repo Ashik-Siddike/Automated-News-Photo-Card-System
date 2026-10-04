@@ -136,6 +136,15 @@ export class CardRenderer {
     const fallbackImage = 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&q=80';
     const imageUrl = news.imageUrl || fallbackImage;
 
+    const brandName = options.branding?.brandName || BRANDING_CONFIG.brandName;
+    const brandTagline = options.branding?.brandTagline || BRANDING_CONFIG.brandTagline;
+    const brandLogoUrl = options.branding?.brandLogoUrl !== undefined 
+      ? options.branding.brandLogoUrl 
+      : BRANDING_CONFIG.brandLogoUrl;
+    const showVerifiedBadge = options.branding?.showVerifiedBadge !== undefined 
+      ? options.branding.showVerifiedBadge 
+      : BRANDING_CONFIG.showVerifiedBadge;
+
     // Replace basic tags
     html = html
       .replace(/{{title}}/g, cleanTitle)
@@ -145,8 +154,25 @@ export class CardRenderer {
       .replace(/{{imageUrl}}/g, imageUrl)
       .replace(/{{qrCodeDataUrl}}/g, qrDataUrl)
       .replace(/{{aspectRatioClass}}/g, aspectRatio)
-      .replace(/{{brandName}}/g, BRANDING_CONFIG.brandName)
-      .replace(/{{brandTagline}}/g, BRANDING_CONFIG.brandTagline);
+      .replace(/{{brandName}}/g, brandName)
+      .replace(/{{brandTagline}}/g, brandTagline);
+
+    // Conditional logo replacement
+    if (brandLogoUrl && brandLogoUrl.trim().length > 0) {
+      html = html.replace(/\{\{#brandLogoUrl\}\}([\s\S]*?)\{\{\/brandLogoUrl\}\}/g, '$1');
+      html = html.replace(/\{\{\^brandLogoUrl\}\}[\s\S]*?\{\{\/brandLogoUrl\}\}/g, '');
+      html = html.replace(/\{\{brandLogoUrl\}\}/g, brandLogoUrl);
+    } else {
+      html = html.replace(/\{\{#brandLogoUrl\}\}[\s\S]*?\{\{\/brandLogoUrl\}\}/g, '');
+      html = html.replace(/\{\{\^brandLogoUrl\}\}([\s\S]*?)\{\{\/brandLogoUrl\}\}/g, '$1');
+    }
+
+    // Conditional verified mark replacement
+    if (showVerifiedBadge) {
+      html = html.replace(/\{\{#showVerifiedBadge\}\}([\s\S]*?)\{\{\/showVerifiedBadge\}\}/g, '$1');
+    } else {
+      html = html.replace(/\{\{#showVerifiedBadge\}\}[\s\S]*?\{\{\/showVerifiedBadge\}\}/g, '');
+    }
 
     // Conditional summary replacement
     if (news.summary && news.summary.trim().length > 0) {

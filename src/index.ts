@@ -6,7 +6,9 @@ import { NewsDeduplicator } from './services/deduplicator';
 import { AISummarizer } from './services/aiSummarizer';
 import { CardRenderer } from './services/cardRenderer';
 import { TelegramDispatcher } from './services/telegramDispatcher';
+import { WebhookDispatcher } from './services/webhookDispatcher';
 import { TemplateStyle, CardAspectRatio, NewsItem } from './types';
+import { getSettings } from './config/settings';
 
 export class PhotoCardPipeline {
   private fetcher: NewsFetcher;
@@ -14,6 +16,7 @@ export class PhotoCardPipeline {
   private summarizer: AISummarizer;
   private renderer: CardRenderer;
   private dispatcher: TelegramDispatcher;
+  private webhookDispatcher: WebhookDispatcher;
 
   constructor() {
     this.fetcher = new NewsFetcher();
@@ -21,6 +24,7 @@ export class PhotoCardPipeline {
     this.summarizer = new AISummarizer();
     this.renderer = new CardRenderer();
     this.dispatcher = new TelegramDispatcher();
+    this.webhookDispatcher = new WebhookDispatcher();
   }
 
   /**
@@ -50,9 +54,10 @@ export class PhotoCardPipeline {
       }
 
       // 3. Process up to maxCards
-      const toProcess = freshNews.slice(0, maxCards);
-      const defaultStyle = (process.env.TEMPLATE_STYLE as TemplateStyle) || 'breaking';
-      const defaultRatio = (process.env.CARD_ASPECT_RATIO as CardAspectRatio) || 'square';
+      const settings = getSettings();
+      const toProcess = freshNews.slice(0, maxCards || settings.generation.maxCardsPerRun || 3);
+      const defaultStyle = (process.env.TEMPLATE_STYLE as TemplateStyle) || settings.generation.defaultStyle || 'breaking';
+      const defaultRatio = (process.env.CARD_ASPECT_RATIO as CardAspectRatio) || settings.generation.defaultAspectRatio || 'square';
 
       for (let i = 0; i < toProcess.length; i++) {
         let news = toProcess[i];
@@ -87,6 +92,12 @@ export class PhotoCardPipeline {
         if (this.dispatcher.isConfigured()) {
           console.log(`📤 টেলিগ্রাম চ্যানেলে পাঠানো হচ্ছে...`);
           await this.dispatcher.dispatch(result);
+        }
+
+        // Dispatch to Zapier / Webhook if configured
+        if (this.webhookDispatcher.isConfigured()) {
+          console.log(`🔗 Zapier / Webhook-এ পাঠানো হচ্ছে...`);
+          await this.webhookDispatcher.dispatch(result);
         }
       }
 

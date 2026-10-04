@@ -117,10 +117,44 @@
       z-index: 10;
     }
 
-    .quote-date-box {
-      color: #94a3b8;
+    .quote-branding-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-header-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo-img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .verified-mark {
+      color: #38bdf8;
       font-size: 16px;
-      font-weight: 500;
+    }
+
+    .brand-tagline {
+      font-size: 14px;
+      color: #94a3b8;
     }
   </style>
 </head>
@@ -145,8 +179,16 @@
     </div>
 
     <div class="quote-footer">
-      <div class="quote-date-box">
-        প্রতিবেদন লিংক স্ক্যান করে মূল খবর যাচাই করুন
+      <div class="quote-branding-box">
+        <div class="brand-header-row">
+          {{#brandLogoUrl}}
+          <img class="brand-logo-img" src="{{brandLogoUrl}}" alt="Logo">
+          {{/brandLogoUrl}}
+          <div class="brand-name">
+            {{brandName}} {{#showVerifiedBadge}}<span class="verified-mark">✓</span>{{/showVerifiedBadge}}
+          </div>
+        </div>
+        <div class="brand-tagline">{{brandTagline}}</div>
       </div>
 
       <div class="qr-badge-container">
